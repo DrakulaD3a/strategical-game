@@ -1,0 +1,18 @@
+[package]
+name = "strategy"
+version = "0.1.0"
+authors = ["Lukas Strnad <strnad.lukas@proton.me>"]
+edition = "2021"
+
+# Enable a small amount of optimization in debug mode
+[profile.dev]
+opt-level = 1
+
+# Enable high optimizations for dependencies (incl. Bevy), but not for our code:
+[profile.dev.package."*"]
+opt-level = 3
+
+[dependencies]
+bevy = { version = "0.9.1", features = ["wayland"] }
+bevy-inspector-egui = "0.17.0"
+rand = "0.8.5"
