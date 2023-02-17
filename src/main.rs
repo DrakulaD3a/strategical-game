@@ -2,6 +2,7 @@ use bevy::{prelude::*, render::camera::ScalingMode};
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 mod map;
+mod wfc;
 
 use map::*;
 
