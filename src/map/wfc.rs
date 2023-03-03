@@ -1,56 +1,54 @@
 use bevy::prelude::*;
-use crate::TileType;
-use rand::Rng;
 
-use super::BOARD_SIZE;
+pub struct WFCPlugin;
 
-// To modify the map, change this impl
-impl TileType {
-    // This has to be equal to the number of different tiles
-    const NUM_PATTERNS: usize = 1;
+impl Plugin for WFCPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_startup_system_to_stage(StartupStage::PreStartup, load_map_patterns);
+    }
+}
 
-    // Add a branch to the match (switch) for each new tile
-    fn from_usize(n: usize) -> Option<Self> {
-        use TileType::*;
-        match n {
-            0 => Some(Normal),
-            _ => None,
+pub const BOARD_SIZE: isize = 16;
+
+pub const SIZE_OF_MAP_PATTERN: i32 = 3;
+const NUM_PATTERNS: usize = 343;
+#[derive(Resource)]
+pub struct MapPattern {
+    pub atlas: TextureAtlas,
+    pub handle: Handle<TextureAtlas>,
+    pub adjacencies: [Vec<i32>; NUM_PATTERNS],
+}
+
+fn load_map_patterns(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+) {
+    let map_image = asset_server.load("map.png");
+    let patterns_atlas = TextureAtlas::from_grid(
+        map_image,
+        Vec2::splat(SIZE_OF_MAP_PATTERN as f32),
+        33,
+        11,
+        Some(Vec2::new(-2.0, 0.0)),
+        None,
+    );
+
+    let atlas_handle = texture_atlases.add(patterns_atlas);
+
+    commands.insert_resource(MapPattern {
+        atlas: patterns_atlas,
+        handle: atlas_handle,
+        adjacencies: get_adjacencies(&patterns_atlas),
+    });
+}
+
+fn get_adjacencies(patterns: &TextureAtlas) -> [Vec<i32>; NUM_PATTERNS] {
+    let adjacencies: [Vec<i32>; NUM_PATTERNS];
+    for index in 0..patterns.len() {
+        let vec = Vec::new();
+        for i in 0..patterns.len() {
         }
     }
-}
-
-fn wfc(mut commands: Commands) {
-    let wave = [[true; TileType::NUM_PATTERNS]; (BOARD_SIZE * BOARD_SIZE) as usize];
-    let entropies = [TileType::NUM_PATTERNS; (BOARD_SIZE * BOARD_SIZE) as usize];
-    let map: [TileType; (BOARD_SIZE * BOARD_SIZE) as usize];
-
-    // Find the lowest entropy and call collapse
-    // Update entropies
-    // Repeat until all entropies == 1
-}
-
-fn update_entropies(
-    wave: [[bool; TileType::NUM_PATTERNS]; (BOARD_SIZE * BOARD_SIZE) as usize],
-    entropies: &mut [usize; (BOARD_SIZE * BOARD_SIZE) as usize],
-) {
-    for (index, entropy) in entropies.iter_mut().enumerate() {
-        *entropy = wave[index]
-            .iter()
-            .filter(|&&wave| wave)
-            .count();
-    }
-}
-
-fn collapse(tile: &mut [bool; TileType::NUM_PATTERNS]) -> Option<TileType> {
-    let true_indices: Vec<usize> = tile
-        .iter()
-        .enumerate()
-        .filter_map(|(index, &value)| if value { Some(index) } else { None })
-        .collect();
-
-    let mut rng = rand::thread_rng();
-
-    let tile_type = rng.gen_range(0..true_indices.len());
-
-    TileType::from_usize(tile_type)
+    adjacencies
 }

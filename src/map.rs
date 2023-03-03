@@ -4,7 +4,6 @@ mod wfc;
 
 use wfc::*;
 
-const BOARD_SIZE: isize = 16;
 const TILE_SIZE: f32 = 1.0;
 const SQRT_3: f32 = 1.73205080757;
 
@@ -28,12 +27,6 @@ pub struct HexCoords {
 
 #[derive(Component)]
 pub struct Tile(TileType);
-
-// This has to be the number of TileTypes
-#[derive(Debug, PartialEq)]
-pub enum TileType {
-    Normal,
-}
 
 #[derive(Resource)]
 pub struct MapAssets {
