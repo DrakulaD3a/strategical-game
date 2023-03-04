@@ -1,4 +1,4 @@
-use bevy::{prelude::*, render::camera::ScalingMode};
+use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 mod map;
@@ -36,23 +36,5 @@ fn main() {
 }
 
 fn spawn_camera(mut commands: Commands) {
-    commands
-        .spawn(Camera3dBundle {
-            projection: OrthographicProjection {
-                scale: 3.0,
-                scaling_mode: ScalingMode::FixedVertical(2.0),
-                ..Default::default()
-            }
-            .into(),
-            transform: Transform::from_xyz(5.0, 5.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
-            ..Default::default()
-        })
-        .insert(Name::new("Camera"));
-
-    commands
-        .spawn(PointLightBundle {
-            transform: Transform::from_xyz(0.0, 5.0, 0.0),
-            ..Default::default()
-        })
-        .insert(Name::new("Light"));
+    commands.spawn(Camera2dBundle::default());
 }
